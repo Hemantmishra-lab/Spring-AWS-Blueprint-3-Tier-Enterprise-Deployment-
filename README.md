@@ -382,7 +382,7 @@ All screenshots demonstrating the live AWS environment, container status, and ve
 ### 🏗️ 1. AWS Cloud Infrastructure
 | Feature | Visual Evidence |
 | :--- | :--- |
-| **VPC & Subnet Topology** <br> Custom VPC (`10.0.0.0/16`) showcasing isolated public, app, and DB subnets[cite: 7]. | ![AWS VPC Architecture](docs/vpc.png) |
+| **VPC & Subnet Topology** <br> Custom VPC (`10.0.0.0/16`) showcasing isolated public, app, and DB subnets[cite: 7]. | ![AWS VPC Architecture](docs/Spring-AWS-VPC.png) |
 | **EC2 Compute Instance** <br> Active `spring-app-server` instance hosted in `us-east-1a`[cite: 2]. | ![EC2 Instance Details](docs/Spring-AWS-EC2.png) |
 | **AWS RDS Instance** <br> Isolated PostgreSQL database instance running in private DB subnet[cite: 1]. | ![AWS RDS PostgreSQL](docs/Spring-AWS-DB.png) |
 
@@ -391,7 +391,7 @@ All screenshots demonstrating the live AWS environment, container status, and ve
 ### 🐳 2. Containerization & Runtime Verification
 | Environment | Visual Evidence |
 | :--- | :--- |
-| **Docker Container Status** <br> Shell output confirming `hmantra1978/spring-aws-blueprint:latest` running on port `8080`[cite: 6]. | ![Docker Process Status](docs/docker.png) |
+| **Docker Container Status** <br> Shell output confirming `hmantra1978/spring-aws-blueprint:latest` running on port `8080`[cite: 6]. | ![Docker Process Status](docs/DockerHub.png) |
 | **Prometheus Metrics Endpoint** <br> Telemetry exported live at `/actuator/prometheus`[cite: 5]. | ![Prometheus Telemetry](docs/Spring-AWS-Prometheus.png) |
 
 ---
