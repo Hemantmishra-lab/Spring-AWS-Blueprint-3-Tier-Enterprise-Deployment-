@@ -1,4 +1,3 @@
-Absolutely. For a GitHub README, I’d make it **enterprise-style but not overclaim anything beyond what your project actually implements**. Here’s a polished version you can directly use:
 
 ````markdown
 # Spring AWS Blueprint – 3-Tier Enterprise Deployment
@@ -457,5 +456,4 @@ Feel free to explore the repository, review the architecture, and use it as a re
 
 ```
 
-This version is deliberately written like a **real engineering project README**, rather than a college-project README.
 ```
