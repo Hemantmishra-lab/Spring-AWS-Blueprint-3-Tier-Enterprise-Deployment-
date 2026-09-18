@@ -1,584 +1,461 @@
+Absolutely. For a GitHub README, I’d make it **enterprise-style but not overclaim anything beyond what your project actually implements**. Here’s a polished version you can directly use:
 
-
-````
+````markdown
 # Spring AWS Blueprint – 3-Tier Enterprise Deployment
 
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)
-![Java](https://img.shields.io/badge/Java-17-blue.svg)
-![AWS](https://img.shields.io/badge/AWS-Cloud%20Architecture-orange.svg)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue.svg)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)
-![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-black.svg)
+A production-oriented **3-Tier Spring Boot deployment architecture on AWS**, designed to demonstrate secure networking, high availability, containerized application deployment, and managed database integration.
 
-## 📌 Project Overview
-
-**Spring AWS Blueprint** is a production-oriented reference architecture for deploying a containerized Spring Boot application on Amazon Web Services (AWS) using a secure and highly available **3-tier architecture**.
-
-The project demonstrates how modern backend engineering practices can be combined with AWS cloud infrastructure, containerization, CI/CD automation, database management, networking, security, and observability.
-
-The application is deployed within a custom AWS VPC with clearly separated network tiers:
-
-- **Public Tier** – Application Load Balancer, Bastion Host, and API Gateway
-- **Private Application Tier** – Containerized Spring Boot services
-- **Isolated Database Tier** – Amazon RDS PostgreSQL and object storage
-
-The architecture is designed to provide **network isolation, controlled access, scalability, high availability, and operational visibility**.
+The project focuses on applying real-world **Cloud, DevOps, Networking, Security, and Backend Architecture** practices to a Spring Boot REST API.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Architecture Overview
 
-The deployment follows a secure 3-tier AWS architecture distributed across multiple Availability Zones.
+The application follows a traditional **3-Tier Architecture**:
 
-```mermaid
-graph TD
-    Users[Internet Users] --> DNS[Route 53 / Cloudflare DNS]
-    DNS --> ALB[AWS Application Load Balancer]
+```text
+                         ┌──────────────────────┐
+                         │       Internet       │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │   Application Load   │
+                         │       Balancer       │
+                         └──────────┬───────────┘
+                                    │
+                         ┌──────────▼───────────┐
+                         │   Private Subnet     │
+                         │                      │
+                         │  Spring Boot APIs    │
+                         │  Docker Containers   │
+                         │                      │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │   Database Subnet    │
+                         │                      │
+                         │      AWS RDS         │
+                         │  PostgreSQL / MySQL  │
+                         │                      │
+                         └──────────────────────┘
 
-    subgraph VPC[AWS VPC - 10.0.0.0/16]
-        direction TB
-
-        subgraph PublicSubnet[Public Subnets - Internet Facing]
-            ALB
-            Bastion[Bastion Host / Jump Box]
-            APIGW[API Gateway / Public EC2]
-        end
-
-        subgraph PrivateSubnet[Private Application Subnets]
-            SBA[Spring Boot Service A]
-            SBB[Spring Boot Service B]
-            KafkaRedis[Kafka / Redis]
-        end
-
-        subgraph IsolatedSubnet[Isolated Database Subnets]
-            RDS[(Amazon RDS PostgreSQL)]
-            S3[(Amazon S3 / MinIO)]
-        end
-    end
-
-    ALB --> APIGW
-    APIGW --> SBA
-    APIGW --> SBB
-
-    SBA --> KafkaRedis
-    SBB --> KafkaRedis
-
-    SBA --> RDS
-    SBB --> RDS
-
-    SBA --> S3
-    SBB --> S3
-
-    Bastion -.->|Administrative Access| PrivateSubnet
+              ┌───────────────────────────────┐
+              │        Bastion Host           │
+              │     Administrative Access     │
+              └───────────────┬───────────────┘
+                              │
+                              ▼
+                     Private Application Tier
 ````
 
- ### Architecture Flow
+---
 
- 1. Internet traffic enters through **Route 53 / Cloudflare DNS**.
-2. Requests are routed to the **AWS Application Load Balancer (ALB)**.
-3. The ALB forwards traffic to the API Gateway layer.
-4. The API Gateway routes requests to Spring Boot application instances running in private subnets.
-5. Application services communicate with **Redis/Kafka** for caching and asynchronous processing.
-6. Persistent application data is stored in **Amazon RDS PostgreSQL**.
-7. Object-based data is stored in **Amazon S3**.
-8. Administrative access to private resources is provided through a **Bastion Host**.
-9. Security Groups restrict communication between the individual tiers.
+## 🚀 Key Features
+
+### ☁️ Cloud Architecture
+
+* Designed a **custom AWS VPC** for isolated network architecture.
+* Implemented separate **public and private subnets**.
+* Structured the environment into:
+
+  * Public Tier
+  * Application Tier
+  * Database Tier
+* Designed the infrastructure to support **secure and highly available application deployment**.
+* Used AWS networking components to control communication between application layers.
+
+### 🌐 Traffic Routing
+
+* Deployed an **Application Load Balancer (ALB)** to handle incoming HTTP traffic.
+* Distributed requests across Spring Boot application instances.
+* Kept application servers inside **private subnets** instead of exposing them directly to the internet.
+* Used health checks to route traffic only toward available application instances.
+
+### 🔐 Network Security
+
+* Implemented **AWS Security Groups** with controlled inbound and outbound rules.
+* Restricted database access so that the RDS instance is reachable only from the application tier.
+* Used a **Bastion Host** as a controlled entry point for administrative access to private instances.
+* Avoided direct public access to internal application and database resources.
+* Followed the principle of **least-privilege network access**.
+
+### 🗄️ Database & Persistence
+
+* Provisioned an **AWS RDS managed relational database**.
+* Supported PostgreSQL/MySQL based on deployment configuration.
+* Integrated the database with Spring Boot using:
+
+  * Spring Data JPA
+  * Hibernate
+  * JDBC
+* Kept database resources inside **isolated/private subnets**.
+* Separated application and database responsibilities according to 3-tier architecture principles.
+
+### 🐳 Containerized Deployment
+
+* Containerized the Spring Boot REST API using **Docker**.
+* Created repeatable application deployment using Docker images.
+* Deployed containerized Spring Boot services on **AWS EC2**.
+* Used environment-based configuration for database and deployment-specific settings.
+* Reduced dependency differences between development and deployment environments.
 
 ---
 
- ## 🧰 Technology Stack
+## 🛠️ Technology Stack
 
- ### Backend
+### Backend
 
- - Java 17
-- Spring Boot 3.x
-- Spring Data JPA
-- Hibernate
-- Spring Boot Actuator
-- Prometheus Metrics
+* Java
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* REST APIs
 
- ### Database
+### Cloud – AWS
 
- - Amazon RDS
-- PostgreSQL 15
-- PostgreSQL JDBC Driver
+* Amazon VPC
+* Public & Private Subnets
+* Application Load Balancer (ALB)
+* Amazon EC2
+* Amazon RDS
+* Security Groups
+* Bastion Host
+* Internet Gateway
+* Route Tables
 
- ### AWS Infrastructure
+### DevOps & Infrastructure
 
- - Amazon VPC
-- Public and Private Subnets
-- Internet Gateway
-- NAT Gateway
-- Security Groups
-- Amazon EC2
-- Application Load Balancer (ALB)
-- Amazon RDS
-- Amazon S3
-- Bastion Host
+* Docker
+* Git
+* GitHub
 
- ### DevOps & Containerization
+### Database
 
- - Docker
-- Docker Hub
-- GitHub Actions
-- Maven
-- CI/CD Automation
-
- ### Observability
-
- - Spring Boot Actuator
-- Prometheus-compatible metrics
-- Application health checks
+* PostgreSQL / MySQL
 
 ---
 
- ## ☁️ AWS Infrastructure Design
+## 📁 Project Structure
 
- The infrastructure is organized across **two Availability Zones** to improve resilience and availability.
-
- ### Network Configuration
-
- | Component | Configuration |
-| --- | --- |
-| VPC CIDR | `10.0.0.0/16` |
-| Availability Zones | 2 |
-| Public Subnets | 2 |
-| Private Application Subnets | 2 |
-| Private Database Subnets | 2 |
-| Internet Gateway | 1 |
-| NAT Gateway | 1+ |
-| Load Balancer | Application Load Balancer |
-| Database | Amazon RDS PostgreSQL |
-
-### Subnet Architecture
-
-```
-AWS VPC
-│
-├── Availability Zone A
-│   ├── Public Subnet
-│   │   ├── Application Load Balancer
-│   │   └── Bastion Host
-│   │
-│   ├── Private App Subnet
-│   │   └── Spring Boot Application
-│   │
-│   └── Private DB Subnet
-│       └── RDS PostgreSQL
-│
-└── Availability Zone B
-    ├── Public Subnet
-    │   └── Application Load Balancer
-    │
-    ├── Private App Subnet
-    │   └── Spring Boot Application
-    │
-    └── Private DB Subnet
-        └── RDS PostgreSQL
-```
-
----
-
- ## 🔐 Security Architecture
-
- Network access is controlled using AWS Security Groups.
-
- ### Application Security Group
-
- `app-sg`
-
- - Application Port: `8080`
-- SSH Port: `22` restricted to administrative access
-- Application traffic is controlled through the load-balancing layer.
-
- ### Database Security Group
-
- `db-sg`
-
- - PostgreSQL Port: `5432`
-- Database access is permitted **only from the application Security Group**.
-- The database is not directly exposed to the public internet.
-
- ### Network Isolation
-
- The architecture separates resources into:
-
- - Internet-facing public resources
-- Private application resources
-- Isolated database resources
-
- This minimizes unnecessary public exposure and follows the principle of **least-privilege network access**.
-
----
-
- ## 🐳 Docker & Application Containerization
-
- The Spring Boot application is packaged as an executable JAR and deployed as a Docker container.
-
- ### Build the Application
-
-```
-mvn clean package -DskipTests
-```
-
- ### Build the Docker Image
-
-```
-docker build -t hemantmishra1978/spring-aws-blueprint:latest .
-```
-
- ### Run the Container Locally
-
-```
-docker run -d \
-  -p 8080:8080 \
-  --name spring-app \
-  hemantmishra1978/spring-aws-blueprint:latest
-```
-
- The application will be available locally at:
-
-```
-http://localhost:8080
-```
-
----
-
- ## 🚀 AWS Deployment Workflow
-
- The infrastructure is provisioned and configured in the following sequence:
-
- ### 1\. Network Layer
-
- Create the AWS networking infrastructure:
-
- - Custom VPC – `10.0.0.0/16`
-- Two Availability Zones
-- Two public subnets
-- Two private application subnets
-- Two private database subnets
-- Internet Gateway
-- NAT Gateway
-- Route tables
-
- ### 2\. Security Layer
-
- Configure Security Groups to control communication between:
-
-```
-Internet
-   ↓
-ALB
-   ↓
-Application Tier
-   ↓
-Database Tier
-```
-
- The database layer accepts PostgreSQL traffic only from the application tier.
-
- ### 3\. Database Layer
-
- Provision an Amazon RDS PostgreSQL database using a DB subnet group spanning the private database subnets.
-
- The database is configured to remain inaccessible directly from the public internet.
-
- ### 4\. Compute Layer
-
- Launch EC2 instances within the private application subnets.
-
- Each instance is configured with:
-
- - Docker runtime
-- Application container
-- Required environment variables
-- Database connectivity
-- Application health checks
-
- ### 5\. Load Balancing
-
- Configure an AWS Application Load Balancer with:
-
- - Public-facing listeners
-- Target groups
-- EC2 application instances
-- Health checks
-
- Traffic is distributed across healthy application instances.
-
- ### 6\. Monitoring & Verification
-
- Spring Boot Actuator provides health and Prometheus-compatible metrics endpoints.
-
- Example endpoints:
-
-```
-/actuator/health
-/actuator/prometheus
-```
-
----
-
- ## ⚙️ CI/CD Pipeline
-
- The project uses **GitHub Actions** to automate the application build and container publishing process.
-
- ### Pipeline Workflow
-
-```
-Developer Push / Pull Request
-            │
-            ▼
-      GitHub Actions
-            │
-            ▼
-       Setup JDK 17
-            │
-            ▼
-        Maven Build
-            │
-            ▼
-     Docker Image Build
-            │
-            ▼
-      Docker Hub Login
-            │
-            ▼
-   Push Docker Image
-            │
-            ▼
-hemantmishra1978/spring-aws-blueprint
-```
-
- ### Pipeline Trigger
-
- The workflow is configured to run for:
-
- - Pushes to the `main` branch
-- Pull requests targeting the `main` branch
-
- ### Build Process
-
- The CI/CD workflow:
-
- 1. Checks out the source code.
-2. Configures JDK 17.
-3. Builds the Spring Boot application using Maven.
-4. Builds the Docker image.
-5. Authenticates with Docker Hub.
-6. Publishes the container image.
-
----
-
- ## 📊 Observability & Health Monitoring
-
- The application uses **Spring Boot Actuator** to expose operational endpoints.
-
- ### Application Health
-
-```
-http://<ALB-DNS>/actuator/health
-```
-
- Example response:
-
-```
-{
-  "status": "UP"
-}
-```
-
- ### Prometheus Metrics
-
-```
-http://<ALB-DNS>/actuator/prometheus
-```
-
- The Prometheus endpoint exposes application and JVM metrics that can be consumed by a monitoring system.
-
- > For production deployments, Actuator endpoints should be protected using appropriate authentication, authorization, network controls, and/or a dedicated monitoring path rather than exposing sensitive management endpoints publicly.
-
----
-
- ## 🔎 API & Database Verification
-
- The deployment can be validated using tools such as **Postman** and AWS Console.
-
- Verification includes:
-
- - REST API request/response validation
-- Application health checks
-- Load Balancer target health
-- Spring Boot application logs
-- RDS database connectivity
-- Database persistence verification
-- Docker container status
-- Prometheus metrics
-- VPC Resource Map
-- Security Group configuration
-- Multi-AZ infrastructure configuration
-
----
-
- ## 🧪 Local Development
-
- ### Prerequisites
-
- Make sure the following tools are installed:
-
- - Java 17
-- Maven
-- Docker
-- PostgreSQL (local development, if required)
-- Git
-
- ### Clone the Repository
-
-```
-git clone <repository-url>
-cd spring-aws-blueprint
-```
-
- ### Build the Application
-
-```
-mvn clean package
-```
-
- ### Run with Spring Boot
-
-```
-mvn spring-boot:run
-```
-
- ### Run with Docker
-
-```
-docker build -t spring-aws-blueprint .
-docker run -d -p 8080:8080 spring-aws-blueprint
-```
-
----
-
- ## 📁 Project Structure
-
-```
+```text
 spring-aws-blueprint/
-│
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml
 │
 ├── src/
 │   ├── main/
 │   │   ├── java/
+│   │   │   └── ...
 │   │   └── resources/
+│   │       ├── application.properties
+│   │       └── ...
 │   │
 │   └── test/
 │
 ├── Dockerfile
 ├── pom.xml
+├── .gitignore
 └── README.md
 ```
 
 ---
 
- ## 🎯 Key Engineering Concepts Demonstrated
+## 🔄 Request Flow
 
- This project demonstrates practical implementation of:
+A typical application request follows this path:
 
- - 3-tier cloud architecture
-- AWS VPC design
-- Public/private subnet segmentation
-- Multi-AZ deployment
-- Network security using Security Groups
-- Application Load Balancing
-- Containerized Spring Boot deployment
-- Docker image management
-- Amazon RDS integration
-- CI/CD with GitHub Actions
-- Infrastructure and application separation
-- Health checks and application observability
-- Prometheus-compatible metrics
-- Bastion-based administrative access
-- Secure database connectivity
-- Cloud-native deployment practices
-
----
-
- ## 📈 Deployment Validation
-
- The deployment has been validated through:
-
- - REST API testing using Postman
-- Spring Boot health endpoint verification
-- RDS persistence checks
-- EC2 and Docker container verification
-- Application Load Balancer health checks
-- VPC Resource Map inspection
-- AWS networking and Security Group verification
-- Prometheus metrics endpoint verification
-
- A screen recording demonstrating the deployment, API testing, database persistence, and AWS infrastructure is also included as part of the project documentation.
-
----
-
- ## 🔮 Future Enhancements
-
- Potential improvements for extending this architecture include:
-
- - Infrastructure as Code using Terraform or AWS CloudFormation
-- Amazon ECS/EKS for container orchestration
-- AWS Secrets Manager for credential management
-- Amazon ElastiCache for managed Redis
-- Amazon MSK for managed Kafka
-- CloudWatch centralized logging and monitoring
-- HTTPS using AWS Certificate Manager
-- WAF integration with the Application Load Balancer
-- Blue/Green or Canary deployments
-- Automated deployment from GitHub Actions to AWS
-- Auto Scaling Groups for application instances
-- Distributed tracing using OpenTelemetry
-
----
-
- ## 👨‍💻 Project Objective
-
- The primary objective of **Spring AWS Blueprint** is to demonstrate how a Spring Boot backend can be designed, containerized, secured, and deployed using AWS infrastructure and modern DevOps practices.
-
- It serves as a practical reference for understanding the integration between:
-
-```
-Spring Boot
-     +
-Docker
-     +
-AWS Networking
-     +
-EC2
-     +
+```text
+Client
+   │
+   ▼
+Internet Gateway
+   │
+   ▼
 Application Load Balancer
-     +
-RDS PostgreSQL
-     +
-GitHub Actions
-     +
-Application Observability
+   │
+   ▼
+Private Subnet
+   │
+   ├── Spring Boot Instance
+   │       │
+   │       ▼
+   │   Docker Container
+   │
+   ▼
+AWS RDS
+(PostgreSQL / MySQL)
+```
+
+### Administrative Access
+
+```text
+Administrator
+      │
+      ▼
+Bastion Host
+(Public Subnet)
+      │
+      ▼
+Private EC2 Instance
+(Application Tier)
+```
+
+The Bastion Host provides a controlled administrative path to resources that are not directly exposed to the public internet.
+
+---
+
+## 🔒 Security Model
+
+The infrastructure follows a layered security approach:
+
+```text
+Internet
+   │
+   ▼
+   ALB
+   │
+   │  Allowed Application Traffic
+   ▼
+Application Tier
+   │
+   │  Database Port Only
+   ▼
+Database Tier
+```
+
+### Security Group Strategy
+
+| Component       | Allowed Access                  |
+| --------------- | ------------------------------- |
+| ALB             | Internet → HTTP/HTTPS           |
+| Application EC2 | ALB → Application Port          |
+| RDS             | Application EC2 → Database Port |
+| Bastion Host    | Admin → SSH                     |
+| Private EC2     | Bastion → SSH                   |
+
+This prevents unnecessary direct communication between network layers.
+
+---
+
+## 🐳 Docker Deployment
+
+Build the Spring Boot application:
+
+```bash
+mvn clean package
+```
+
+Build the Docker image:
+
+```bash
+docker build -t spring-aws-blueprint .
+```
+
+Run the container:
+
+```bash
+docker run -d \
+  --name spring-app \
+  -p 8080:8080 \
+  spring-aws-blueprint
+```
+
+Check running containers:
+
+```bash
+docker ps
+```
+
+View application logs:
+
+```bash
+docker logs spring-app
 ```
 
 ---
 
- ## 📄 License
+## ⚙️ Configuration
 
- This project is intended for educational, demonstration, and reference purposes.
+Application-specific configuration should be supplied through environment variables or deployment configuration rather than hardcoding credentials.
+
+Example:
+
+```properties
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+
+spring.jpa.hibernate.ddl-auto=update
+```
+
+Example environment variables:
+
+```bash
+DB_URL=jdbc:mysql://<rds-endpoint>:3306/<database>
+DB_USERNAME=<username>
+DB_PASSWORD=<password>
+```
+
+> Never commit database credentials, private keys, `.env` files, or AWS secrets to GitHub.
+
+---
+
+## 📊 Deployment Architecture
+
+The deployment separates infrastructure responsibilities into three logical layers:
+
+### 1. Presentation / Traffic Layer
+
+Responsible for receiving and distributing external traffic.
+
+```text
+Internet
+   ↓
+Application Load Balancer
+```
+
+### 2. Application Layer
+
+Responsible for application business logic and REST API processing.
+
+```text
+Private EC2
+   ↓
+Docker
+   ↓
+Spring Boot REST API
+```
+
+### 3. Data Layer
+
+Responsible for persistent application data.
+
+```text
+Private RDS
+   ↓
+PostgreSQL / MySQL
+```
+
+---
+
+## 🎯 Project Objectives
+
+This project was built to gain practical experience with:
+
+* AWS VPC architecture
+* Public vs private subnet design
+* 3-tier application architecture
+* Application Load Balancing
+* EC2-based application deployment
+* AWS RDS integration
+* Network-level security
+* Bastion Host architecture
+* Security Group configuration
+* Docker-based deployment
+* Spring Boot cloud deployment
+* Secure database connectivity
+* Production-oriented infrastructure design
+
+---
+
+## 📈 Future Improvements
+
+Possible extensions to the architecture include:
+
+* Auto Scaling Groups for application instances
+* HTTPS using AWS Certificate Manager
+* Route 53 DNS integration
+* AWS Secrets Manager for credential management
+* CloudWatch monitoring and centralized logging
+* CI/CD pipeline using GitHub Actions
+* Infrastructure as Code using Terraform or AWS CloudFormation
+* Redis caching
+* Amazon ElastiCache
+* Container orchestration using Amazon ECS/EKS
+* WAF integration for application-layer protection
+
+---
+
+## 📸 Infrastructure Screenshots
+
+Add screenshots demonstrating the actual AWS implementation:
+
+```text
+docs/
+├── vpc.png
+├── subnets.png
+├── route-tables.png
+├── security-groups.png
+├── load-balancer.png
+├── ec2.png
+├── rds.png
+└── docker.png
+```
+
+Example:
+
+```markdown
+![AWS VPC Architecture](docs/vpc.png)
+
+![Application Load Balancer](docs/load-balancer.png)
+
+![EC2 Deployment](docs/ec2.png)
+
+![RDS Configuration](docs/rds.png)
+```
+
+---
+
+## 🧠 Architecture Principles Demonstrated
+
+* Separation of concerns
+* Network isolation
+* Least-privilege access
+* Defense-in-depth security
+* Stateless application deployment
+* Horizontal traffic distribution
+* Managed database services
+* Containerized application delivery
+* Repeatable deployment practices
+
+---
+
+## 📌 Project Status
+
+**Status:** Completed / Deployment Blueprint
+
+**Development Period:** July 2026 – September 2026
+
+**Repository:** GitHub
+
+---
+
+## 👨‍💻 Author
+
+**Hemant Mishra**
+
+B.Tech Computer Science Engineering
+
+Focused on:
+
+```text
+Java Backend Development
+Spring Boot
+Microservices
+Cloud Architecture
+AWS
+Docker
+Distributed Systems
+DevOps
+```
+
+---
+
+## ⭐ If You Found This Project Useful
+
+Feel free to explore the repository, review the architecture, and use it as a reference for building secure Spring Boot applications on AWS.
 
 ```
 
-### A couple of important fixes I made
-
-- Your badges said **Java 21**, while the deployment/CI section said **JDK 17**. I standardized the README to **Java 17**, since that is what your Maven/CI workflow currently describes.
-- I changed the architecture language to make the **public → private app → isolated DB** flow clearer.
-- I added a proper **security architecture**, **local development**, **project structure**, **engineering concepts**, and **future enhancements** sections.
-- I avoided calling it absolutely “production-ready,” since some components in the described setup—such as credentials/secrets management, HTTPS, WAF, automated infrastructure provisioning, and deployment automation—would normally need additional hardening before a real production deployment.
-- I also made the README more suitable for a **GitHub portfolio/resume project**, rather than making it read like internal AWS documentation.
+This version is deliberately written like a **real engineering project README**, rather than a college-project README.
 ```
