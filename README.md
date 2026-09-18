@@ -375,33 +375,32 @@ Possible extensions to the architecture include:
 
 ---
 
-## 📸 Infrastructure Screenshots
+## 📸 Infrastructure & Deployment Evidence
 
-Add screenshots demonstrating the actual AWS implementation:
+All screenshots demonstrating the live AWS environment, container status, and verified API endpoints are organized under the `docs/` directory.
 
-```text
-docs/
-├── vpc.png
-├── subnets.png
-├── route-tables.png
-├── security-groups.png
-├── load-balancer.png
-├── ec2.png
-├── rds.png
-└── docker.png
-```
+### 🏗️ 1. AWS Cloud Infrastructure
+| Feature | Visual Evidence |
+| :--- | :--- |
+| **VPC & Subnet Topology** <br> Custom VPC (`10.0.0.0/16`) showcasing isolated public, app, and DB subnets[cite: 7]. | ![AWS VPC Architecture](docs/vpc.png) |
+| **EC2 Compute Instance** <br> Active `spring-app-server` instance hosted in `us-east-1a`[cite: 2]. | ![EC2 Instance Details](docs/Spring-AWS-EC2.png) |
+| **AWS RDS Instance** <br> Isolated PostgreSQL database instance running in private DB subnet[cite: 1]. | ![AWS RDS PostgreSQL](docs/Spring-AWS-DB.png) |
 
-Example:
+---
 
-```markdown
-![AWS VPC Architecture](docs/vpc.png)
+### 🐳 2. Containerization & Runtime Verification
+| Environment | Visual Evidence |
+| :--- | :--- |
+| **Docker Container Status** <br> Shell output confirming `hmantra1978/spring-aws-blueprint:latest` running on port `8080`[cite: 6]. | ![Docker Process Status](docs/docker.png) |
+| **Prometheus Metrics Endpoint** <br> Telemetry exported live at `/actuator/prometheus`[cite: 5]. | ![Prometheus Telemetry](docs/Spring-AWS-Prometheus.png) |
 
-![Application Load Balancer](docs/load-balancer.png)
+---
 
-![EC2 Deployment](docs/ec2.png)
-
-![RDS Configuration](docs/rds.png)
-```
+### 🧪 3. Live API Endpoints (Postman Verification)
+| Endpoint Action | Visual Evidence |
+| :--- | :--- |
+| **POST Request (`/api/products`)** <br> Creating a new record in AWS RDS via Spring Data JPA[cite: 4]. | ![Postman POST Request](docs/Spring-AWS-POST-Data.png) |
+| **GET Request (`/api/products`)** <br> Fetching persisted product records directly from PostgreSQL[cite: 3]. | ![Postman GET Request](docs/Spring-AWS-GET-DATA.png) |
 
 ---
 
