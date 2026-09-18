@@ -50,20 +50,22 @@ The application follows a traditional **3-Tier Architecture**:
 ````
 ## 🎥 AWS Deployment Demo
 
-> **Live deployment walkthrough:** The following video demonstrates the complete deployment and verification of the Spring Boot application on AWS, including the cloud infrastructure, EC2 deployment, Docker container, RDS integration, and API functionality.
+Live deployment walkthrough demonstrating the complete end-to-end setup and verification of the Spring Boot application on AWS—including cloud infrastructure, EC2 instance setup, Docker containerization, RDS PostgreSQL integration, and live API testing.
 
-▶️ **[Watch the AWS Deployment Demonstration](https://youtu.be/MlsOxuWhlEs?si=kiuZMxno5nRs_3Lp)**
+<a href="https://youtu.be/MlsOxuWhlEs?si=kiuZMxno5nRs_3Lp" target="_blank">
+  <img src="https://img.youtube.com/vi/MlsOxuWhlEs/maxresdefault.jpg" alt="Spring AWS Blueprint - AWS Deployment Demonstration" width="100%" style="border-radius: 8px;" />
+</a>
 
-The demonstration covers:
+▶️ **[Watch the Live AWS Deployment Demonstration on YouTube](https://youtu.be/MlsOxuWhlEs?si=kiuZMxno5nRs_3Lp)**
 
-* AWS VPC and subnet configuration
-* EC2 application deployment
-* Docker container execution
-* Application Load Balancer configuration
-* AWS RDS database integration
-* Spring Boot REST API deployment
-* Runtime and API verification
+---
 
+### 📌 Key Coverage in the Demonstration:
+* **Custom AWS VPC Topology**: Network segregation across isolated public, application, and database subnets
+* **EC2 Compute Instance**: Deployment and security group rule verification
+* **Docker Container Execution**: Runtime check via terminal (`sudo docker ps`)
+* **AWS RDS Integration**: PostgreSQL database connectivity using Spring Data JPA
+* **API Endpoint Verification**: Live REST API testing and response validation using Postman
 
 ---
 
