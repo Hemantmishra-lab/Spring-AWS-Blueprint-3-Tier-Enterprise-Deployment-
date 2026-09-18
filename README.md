@@ -467,8 +467,7 @@ DevOps
 
 ---
 
-## ⭐ If You Found This Project Useful
-
+## ⭐ If you found this reference architecture helpful, feel free to star this repository!
 Feel free to explore the repository, review the architecture, and use it as a reference for building secure Spring Boot applications on AWS.
 
 ```
