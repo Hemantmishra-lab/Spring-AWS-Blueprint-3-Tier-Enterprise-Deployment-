@@ -53,3 +53,55 @@ graph TD
     SBB --> S3
     
     Bastion -.->|Admin SSH Access| PrivateSubnet
+
+🧰 Tech Stack & Tools
+Backend Framework: Java 17, Spring Boot 3.x, Spring Data JPA, Spring Actuator, Prometheus
+
+Database & ORM: AWS RDS (PostgreSQL 15), Hibernate, PostgreSQL Driver
+
+Cloud Infrastructure (AWS): VPC, Public & Private Subnets, Internet Gateway, NAT Gateway, Security Groups, EC2, RDS, ALB, Bastion Host
+
+DevOps & Observability: Docker, Docker Hub (hemantmishra1978/spring-aws-blueprint), GitHub Actions, Actuator Prometheus Endpoint
+
+🚀 Deployment & Operational Workflow
+1. Build & Containerization
+Bash
+# Compile and package Spring Boot executable JAR
+mvn clean package -DskipTests
+
+# Build Docker image locally
+docker build -t hemantmishra1978/spring-aws-blueprint:latest .
+
+# Run container locally with PostgreSQL connection
+docker run -d -p 8080:8080 --name spring-app hemantmishra1978/spring-aws-blueprint:latest
+2. AWS Cloud Provisioning Sequence
+Network Layer Setup: Create Custom VPC (10.0.0.0/16), 6 subnets across 2 AZs (2 Public, 2 Private App, 2 Private DB), Internet Gateway, and NAT Gateway.
+
+Security & Access Layer: Configure Security Groups:
+
+app-sg: Ingress Port 8080 (App) and Port 22 (Bastion Access).
+
+db-sg: Ingress Port 5432 allowed only from app-sg.
+
+Database Tier: Provision Multi-AZ AWS RDS PostgreSQL instance in isolated DB Subnets.
+
+Compute Tier: Launch Ubuntu EC2 instances in private/public subnets, initialize Docker runtime, and pull application image.
+
+Load Balancing & Observability: Attach EC2 instances to Application Load Balancer target groups and verify health metrics via /actuator/prometheus.
+
+⚙️ Automated CI/CD Pipeline
+The project uses a GitHub Actions workflow (.github/workflows/ci-cd.yml) to ensure continuous integration:
+
+Trigger: Pushes or Pull Requests targeting the main branch.
+
+Build Phase: Sets up JDK 17 environment and compiles application via Maven.
+
+Container Publishing Phase: Authenticates with Docker Hub and publishes the latest tagged image (hemantmishra1978/spring-aws-blueprint:latest).
+
+📈 Observability & API Verification
+Prometheus Metrics Endpoint: http://<EC2-PUBLIC-IP-OR-ALB>:8080/actuator/prometheus
+
+Health Check Endpoint: http://<EC2-PUBLIC-IP-OR-ALB>:8080/actuator/health
+
+Live Demonstration & Verification
+Screen recording and live AWS deployment evidence featuring API Postman tests, RDS database persistence check, and VPC Resource Map visual architecture.
