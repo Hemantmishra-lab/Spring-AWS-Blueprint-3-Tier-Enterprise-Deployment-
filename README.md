@@ -1,4 +1,4 @@
-Absolutely. Here’s a more polished, professional, and recruiter-friendly version of your README. I’ve also cleaned up the inconsistencies in the original (for example, Java 17 vs. Java 21) and made the architecture/deployment sections easier to follow.
+
 
 ````
 # Spring AWS Blueprint – 3-Tier Enterprise Deployment
