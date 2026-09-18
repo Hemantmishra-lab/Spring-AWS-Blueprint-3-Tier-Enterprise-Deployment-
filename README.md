@@ -48,6 +48,22 @@ The application follows a traditional **3-Tier Architecture**:
                               ▼
                      Private Application Tier
 ````
+## 🎥 AWS Deployment Demo
+
+> **Live deployment walkthrough:** The following video demonstrates the complete deployment and verification of the Spring Boot application on AWS, including the cloud infrastructure, EC2 deployment, Docker container, RDS integration, and API functionality.
+
+▶️ **[Watch the AWS Deployment Demonstration](https://youtu.be/MlsOxuWhlEs?si=kiuZMxno5nRs_3Lp)**
+
+The demonstration covers:
+
+* AWS VPC and subnet configuration
+* EC2 application deployment
+* Docker container execution
+* Application Load Balancer configuration
+* AWS RDS database integration
+* Spring Boot REST API deployment
+* Runtime and API verification
+
 
 ---
 
